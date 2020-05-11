@@ -1,5 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:toast/toast.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class SettingPage extends StatefulWidget {
   static String tag = 'setting-page';
@@ -9,89 +16,89 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
 
-  void _alertdialogprivacy(){
-    AlertDialog alertDialog = new AlertDialog(
-      title: Text("Privacy RenunganHarian", style: new TextStyle(fontSize: 28.0, color: Colors.black),),
-      content: new Text(
-        "RenunganHarian adalah layanan renungan harian kristen yang ada di Indonesia. RenunganHarian lahir untuk menjadi wadah sinergi bagi semua layanan masyarakat dalam membaca renungan kristen. Perpindahan ke RenunganHarian adalah proses penginputan data yang tercatat di masing-masing akun, sehingga sampai pada renungan lain yang tertuju pada aplikasi. Waktu pelaksanaan adalah sesuai dengan registrasi waktu sekarang. Keamanan informasi Data Pribadi Anda adalah hal yang sangat penting bagi kami. Finarya memastikan bahwa informasi yang dikumpulkan akan disimpan dengan aman, namun harap diketahui bahwa tidak ada metode menyangkut transmisi data melalui internet, atau metode penyimpanan elektronik yang benar-benar 100% (seratus persen) aman. Kami berusaha untuk melindungi Data Pribadi Anda. Kami menyimpan informasi Data Pribadi Anda dengan cara: Membatasi akses ke dalam informasi Data Pribadi Anda. Secara aman menghancurkan informasi Data Pribadi Anda saat kami tidak lagi membutuhkannya untuk tujuan tertentu.",
-        style: new TextStyle(fontSize: 14.0),
-      ),
-      actions: <Widget>[
-        new RaisedButton(
-          color: Colors.greenAccent,
-          child: new Text("cancel"),
-          onPressed: (){
-            Navigator.pop(context);
-          },)
-      ],
-    );
-    showDialog(context: context, child: alertDialog);
+  DateTime date = new DateTime.now();
+  String hari='';
+  String namafile='';
+  String path = '';
+
+  void Download() async {
+    namafile = hari + '.jpg';
+    print(namafile);
+    StorageReference sr = await FirebaseStorage.instance.ref().child('images/${namafile}');
+    String url = await sr.getDownloadURL();
+    print(url);
+    setState(() {
+      path = url;
+    });
   }
 
-  void _alertdialoghelp(){
-    AlertDialog alertDialog = new AlertDialog(
-      title: Text("Privacy RenunganHarian", style: new TextStyle(fontSize: 28.0, color: Colors.black),),
-      content: new Text(
-          "Anda bingung memakai aplikasi ini? \n" + "\n" +
-              "1. Pilih Renungan, secara otomatis akan menampilkan data renungan yang ada\n" +"\n" +
-              "2. Jika ingin menambahkan renungan, pada tampilan home pilih add renungan maka akan secara otomatis user bisa menambahkan renungan,\n" +"\n" +
-              "3. Jika ingin melihat history renungan yang dibaca, pada tampilan home bisa memilih riwayat maka akan tampil history yang dibaca oleh pengguna,\n" +"\n" +
-              "4. Ada fitur pengaturan untuk membantu user.",
-        style: new TextStyle(fontSize: 14.0),
-      ),
-      actions: <Widget>[
-        new RaisedButton(
-          color: Colors.greenAccent,
-          child: new Text("cancel"),
-          onPressed: (){
-            Navigator.pop(context);
-          },)
-      ],
-    );
-    showDialog(context: context, child: alertDialog);
+  void share() async {
+    var request = await HttpClient().getUrl(Uri.parse(path));
+    var response = await request.close();
+    Uint8List bytes = await consolidateHttpClientResponseBytes(response);
+    await Share.file('Share Verse Image', 'amlog.jpg', bytes, 'image/jpg');
+  }
+
+  void DownloadToDevice() async {
+    Directory dir = await getExternalStorageDirectory();
+    File file = File('${dir.path}/${namafile}');
+
+    StorageReference sr = await FirebaseStorage.instance.ref().child('images/${namafile}');
+    await sr.writeToFile(file);
+    Toast.show("Download Image Success", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
   }
 
   @override
   Widget build(BuildContext context) {
+    hari = date.day.toString();
+    Download();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Setting'),
+        title: Text("Today's Verse Image"),
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: <Widget>[
-            Card(
-//              elevation: 4.0,
-//              margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 16.0),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.account_circle, color: Colors.grey,),
-                    title: Text("Account"),
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: (){},
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.fromLTRB(15, 30, 0, 0),
+                  child: ListTile(
+                    leading: Icon(Icons.image,
+                    color: Colors.blueAccent,),
+                    title: Text("Today's Verse Image", style: TextStyle(
+                      fontSize: 20,
+                    ),),
+                    trailing: Icon(Icons.more_vert),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.help, color: Colors.grey,),
-                    title: Text("Help"),
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: (){
-                      _alertdialoghelp();
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.vpn_key, color: Colors.grey,),
-                    title: Text("Privacy"),
-                    trailing: Icon(Icons.keyboard_arrow_right),
-                    onTap: (){
-                      _alertdialogprivacy();
-                    },
-                  ),
-                ],
+                ),
+
+                Divider(),
+            Image.network(path,
+                width: 400,
+                height: 400,
               ),
-            )
+            Divider(),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(15),
+              child: Text("Share To Others : ",
+                  style: TextStyle(fontSize: 15
+                  )),
+            ),
+            IconButton(
+              icon: Icon(Icons.share,
+              color: Colors.green),
+              onPressed: share,
+            ),
+            RaisedButton(
+              onPressed: DownloadToDevice,
+              child: Text("Download to Device",
+                  style: TextStyle(fontSize: 15.0, color: Colors.white
+                  ),
+              ),
+              color: Colors.blueAccent,
+            ),
           ],
         ),
       ),

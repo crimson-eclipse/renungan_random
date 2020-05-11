@@ -49,9 +49,9 @@ class DatabaseHelper {
       new Datas2(list[i]["judul"], list[i]["ayat"], list[i]["description"]);
       data.setDataId(list[i]["id"]);
       renungan.add(data);
-      print("index: "+ list[i]["id"].toString());
+      //print("index: "+ list[i]["id"].toString());
     }
-    print(renungan.length);
+    //print(renungan.length);
     return renungan;
   }
 
@@ -81,9 +81,9 @@ class DatabaseHelper {
       new Datas2(list[i]["judul"], list[i]["ayat"], list[i]["description"]);
       data.setDataId(list[i]["id"]);
       renungan.add(data);
-      print("index: "+ list[i]["id"].toString());
+      //print("index: "+ list[i]["id"].toString());
     }
-    print(renungan.length);
+    //print(renungan.length);
     return renungan;
   }
 

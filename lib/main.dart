@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         '/renunganPage': (context) => RenunganPage(),
         '/tambahPage': (context) => AddPage(),
         '/settingPage': (context) => SettingPage(),
-        '/historyPage': (context) => HistoryPage(),
+        '/historyPage': (context) => BgaPage(),
 
         //tambah.dart gak dipake
       },

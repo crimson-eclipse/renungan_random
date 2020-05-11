@@ -42,6 +42,13 @@ class _RenunganPageState extends State<RenunganPage> {
   DateTime dateTime = DateTime.now();
   String date;
   String nampungtgl;
+  int renunganIndex;
+
+  void gantivalue() async{
+    dt.setJudul(tamplilList[renunganIndex].judul);
+    dt.setAyat(tamplilList[renunganIndex].ayat);
+    dt.setDeskripsi(tamplilList[renunganIndex].description);
+  }
 
   void randIndex(List<Datas2> list) async {
     int size = list.length;
@@ -89,9 +96,20 @@ class _RenunganPageState extends State<RenunganPage> {
       nampungtgl = DateFormat("dd MMMM yyyy").format(dateTime).toString();
       String hari = dateTime.day.toString();
       int renunganIndex = indexArray[dateTime.day];
-      dt = Datas2(
-          tamplilList[renunganIndex].judul, tamplilList[renunganIndex].ayat,
-          tamplilList[renunganIndex].description);
+
+      print("Hari : '$hari'");
+      print("Indexxx: '$renunganIndex'");
+      print("LIST: ");
+      gantivalue();
+      for(int i = 0; i <= indexArray.length; i++)
+      {
+        int indexarr = indexArray[i];
+        print(" '$indexarr'");
+      }
+
+//      dt = Datas2(
+//          tamplilList[renunganIndex].judul, tamplilList[renunganIndex].ayat,
+//          tamplilList[renunganIndex].description);
     });
   }
 
@@ -133,7 +151,9 @@ class _RenunganPageState extends State<RenunganPage> {
 
 
                     return Column(
+
                       children: <Widget>[
+
                         Card(
                           child: ListTile(
 //                leading: Icon(Icons.calendar_today),

@@ -31,11 +31,13 @@ class _HomePageState extends State<HomePage>{
         children: <Widget>[
           makeDashboardItemRenungan("Renungan", Icons.bookmark),
           makeDashboardItemTambah("Add Renungan", Icons.add_box),
-          makeDashboardItemHistory("History", Icons.history),
-          makeDashboardItemSetting("Setting", Icons.settings_applications)
+          makeDashboardItemHistory("Baca Gali Alkitab", Icons.chrome_reader_mode),
+          makeDashboardItemSetting("Today's verse", Icons.image),
       ],
       ),
-    ),);
+    ),
+
+    );
   }
 
   Card makeDashboardItemRenungan(String title, IconData icon) {

@@ -94,9 +94,10 @@ class AddDataDialog {
     var data = new Datas2(teJudul.text, teAyat.text, teDescription.text);
     if (isEdit) {
       data.setDataId(this.data.id);
-      await db.update(data);
+      await db.update(data);//UPDATE
+
     } else {
-      await db.saveData(data);
+      await db.saveData(data);//INSERT
     }
   }
 }

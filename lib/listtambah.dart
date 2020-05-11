@@ -35,14 +35,6 @@ class DataList extends StatelessWidget {
                           child: new Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-//                              new Text(
-//                                index.toString(),
-//                                // set some style to text
-//                                style: new TextStyle(
-//                                    fontSize: 30.0,
-//                                    color: Colors.black,
-//                                    fontWeight: FontWeight.bold),
-//                              ),
                               new Text(
                                 country[index].judul,
                                 // set some style to text
